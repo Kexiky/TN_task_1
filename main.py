@@ -127,7 +127,7 @@ if __name__ == "__main__":
 
     #Отправка письма с корректным склонением слова "строк" (Пункты 10-11)
     email = 'MelkorLudoed@yandex.ru'
-    password = 'scyvtqysosrwnkkq'
+    password = 'password'
     to_email = 'h.o.r.s.e.p.o.w.e.r771@gmail.com'
     text_email = text_row(table_rez.shape[0])
     subject = 'Test'
