@@ -1,5 +1,8 @@
 # TN_task_1
  Task from Transneft
+ 
+Required libraries
+  selenium, pandas, xlswriter, numpy, smtplib
 
 1. Открыть сайт "https://www.moex.com/".
 
