@@ -36,13 +36,14 @@ def get_data_from_url(url):
 def text_to_table(text, c_d):
     table = text.split("\n")[2:]
     table = np.array([x.split() for x in table])
-    table = pd.DataFrame({
+    table_data = pd.DataFrame({
         'Дата': table[:, 0],
         'Значение курса промежуточного клиринга': table[:, 1],
         'Время': table[:, 2],
         'Значение курса основного клиринга': table[:, 3],
-        'Время': table[:, 4]
     })
+    table = pd.concat([table_data, pd.DataFrame({'Время': table[:, 4]})], axis=1)
+
     table = table[(table['Дата'].str[3:5] == c_d[:2]) & (table['Дата'].str[6:] == c_d[3:])]
     if len(table) == 0:
         return []
@@ -53,7 +54,7 @@ def text_to_table(text, c_d):
     return table
 
 def auto_width_form_col(excel_file, data, sheet_name, form_col):
-    form = excel_file.book.add_format({'num_format': '$#,##0.00_);[Red]($#,##0.00)'})
+    form = excel_file.book.add_format({'num_format': '_-* # ##0.00#### ₽_-;-* # ##0.00#### ₽_-;_-* "-"???? ₽_-;_-@_-'})
     i = 0
     for col in data:
         width_col = max(data.iloc[:, i].astype(str).map(len).max(), len(col))
@@ -65,7 +66,7 @@ def auto_width_form_col(excel_file, data, sheet_name, form_col):
     return excel_file
 
 def text_row(row_count):
-    if (5 <= row_count <= 20) or (5 <= row_count % 10 <= 9) or (row_count % 10 == 0):
+    if (5 <= row_count % 100 <= 20) or (5 <= row_count % 10 <= 9) or (row_count % 10 == 0):
         text = f'{row_count} строк'
     elif (2 <= row_count%10 <= 4):
         text = f'{row_count} строки'
@@ -122,7 +123,10 @@ if __name__ == "__main__":
     excel_path = f"{date.today().strftime('%Y.%m.%d')}_report.xlsx"
     excel = pd.ExcelWriter(excel_path)
     table_rez.to_excel(excel, sheet_name=sheetname, index=False, na_rep="-")
-    excel = auto_width_form_col(excel_file=excel, data=table_rez, sheet_name=sheetname, form_col=[1, 3, 5, 7, 8])
+    excel = auto_width_form_col(excel_file=excel,
+                                data=table_rez,
+                                sheet_name=sheetname,
+                                form_col=[1, 3, 6, 8, 10])
     excel.save()
 
     #Отправка письма с корректным склонением слова "строк" (Пункты 10-11)
